@@ -42,16 +42,17 @@ def train(processed_dir: str, test_wav_dir: str):
     #====================load data================#
     print('Loading Data...')
 
-    files, names = get_files_labels(os.path.join(processed_dir, '*.npy'))
+    files, names = get_files_labels(os.path.join(processed_dir, '*SYNTH*.npy'))
+#    files, names = get_files_labels(os.path.join(processed_dir, '*.npy'))
     assert len(files) > 0
 
     normlizer = Normalizer()
 
-    exclude_dict = {}  #key that not appear in the value list.(eg. SF1:[TM1**.wav,TM2**.wav,SF2**.wav ... ])
-    for s in all_speaker:
-        p = os.path.join(processed_dir, '*.npy')  #'./data/processed/*.npy'
-        temp = [fn for fn in glob.glob(p) if fn.find(s) == -1]
-        exclude_dict[s] = temp
+#    exclude_dict = {}  #key that not appear in the value list.(eg. SF1:[TM1**.wav,TM2**.wav,SF2**.wav ... ])
+#    for s in all_speaker:
+#        p = os.path.join(processed_dir, '*.npy')  #'./data/processed/*.npy'
+#        temp = [fn for fn in glob.glob(p) if fn.find(s) == -1]
+#        exclude_dict[s] = temp
 
     print('Loading Data Done.')
 
@@ -98,12 +99,17 @@ def train(processed_dir: str, test_wav_dir: str):
 
             X, X_t, y, y_t = [], [], [], []
 
+            p = os.path.join(processed_dir, '*.npy')
+
+            non_synth_files = [fn for fn in glob.glob(p) if 'SYNTH' not in fn]
+
             #get target file paths
             batchnames = names_shuffled[start:end]
             pre_targets = []
             for name in batchnames:
-                name = name.split(sep='-')[0]  #SF1
-                t = np.random.choice(exclude_dict[name], 1)[0]
+#                name = name.split(sep='-')[0]  #SF1
+#                t = np.random.choice(exclude_dict[name], 1)[0]
+                t = np.random.choice(synth_files)
                 pre_targets.append(t)
 
             #one batch train data
