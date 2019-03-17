@@ -56,7 +56,7 @@ def load_wavs(dataset: str, sr):
     return resdict
 
 
-def wav_to_mcep_file(dataset: str, sr=16000, ispad: bool = False, processed_filepath: str = './data/processed'):
+def wav_to_mcep_file(dataset: str, sr=16000, ispad: bool = False, processed_filepath: str = None):
     '''convert wavs to mcep feature using image repr'''
     #if no processed_filepath, create it ,or delete all npz files
     if not os.path.exists(processed_filepath):
@@ -179,12 +179,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Convert the wav waveform to mel-cepstral coefficients(MCCs)\
     and calculate the speech statistical characteristics')
 
-    input_dir = './data/fourspeakers'
-    output_dir = './data/processed'
+    input_dir_def = './data/fourspeakers'
+    output_dir_def = './data/processed'
     ispad = True
 
-    parser.add_argument('--input_dir', type=str, help='the direcotry contains data need to be processed', default=input_dir)
-    parser.add_argument('--output_dir', type=str, help='the directory stores the processed data', default=output_dir)
+    parser.add_argument('--input_dir', type=str, help='the direcotry contains data need to be processed', default=input_dir_def)
+    parser.add_argument('--output_dir', type=str, help='the directory stores the processed data', default=output_dir_def)
     parser.add_argument('--ispad', type=bool, help='whether to pad the wavs  to get fixed length MCEP', default=ispad)
 
     argv = parser.parse_args()

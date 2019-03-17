@@ -31,7 +31,7 @@ class StarGANVC(object):
 
         self.build_model()
 
-        self.saver = tf.train.Saver()
+        self.saver = tf.train.Saver(max_to_keep=50)
         self.sess = tf.Session()
         self.sess.run(tf.global_variables_initializer())
 

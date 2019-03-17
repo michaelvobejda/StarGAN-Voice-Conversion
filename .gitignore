@@ -1,0 +1,11 @@
+data/*
+out/*
+log/*
+etc/*
+out_de_20_cycle_lambda/*
+out_en_100_cycle_lambda/*
+out_vanilla_run/*
+
+*.swp
+__pycache__/*
+

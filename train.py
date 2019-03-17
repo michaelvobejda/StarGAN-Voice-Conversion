@@ -29,7 +29,12 @@ def train(processed_dir: str, test_wav_dir: str):
     label_enc = LabelEncoder()
     label_enc.fit(all_speaker)
 
-    lambda_cycle = 10
+    # Orig values
+#    lambda_cycle = 10
+#    lambda_identity = 5
+#    lambda_classifier = 3
+    
+    lambda_cycle = 20
     lambda_identity = 5
     lambda_classifier = 3
 
@@ -61,6 +66,10 @@ def train(processed_dir: str, test_wav_dir: str):
     model = StarGANVC(num_features=FEATURE_DIM, frames=FRAMES)
     #====================start train==============#
     EPOCH = 101
+
+    gen_losses = []
+    disc_losses = []
+    class_losses = []
 
     num_samples = len(files)
     for epoch in range(EPOCH):
@@ -168,9 +177,16 @@ def train(processed_dir: str, test_wav_dir: str):
             .format(num_iterations, generator_learning_rate, discriminator_learning_rate, generator_loss, \
             discriminator_loss, domain_classifier_loss))
 
+            gen_losses.append(generator_loss)
+            disc_losses.append(discriminator_loss)
+            class_losses.append(domain_classifier_loss)
+
+
         #=======================test model==========================
 
-        if epoch % 10 == 0 and epoch != 0:
+        save_every = 5
+
+        if epoch % save_every == 0 and epoch != 0:
             print('============test model============')
             #out put path
             file_path = os.path.join('./out', f'{epoch}_{timestr}')
@@ -251,7 +267,7 @@ def train(processed_dir: str, test_wav_dir: str):
 
         #====================save model=======================
 
-        if epoch % 10 == 0 and epoch != 0:
+        if epoch % save_every == 0 and epoch != 0:
             print('============save model============')
             model_path = os.path.join(file_path, 'model')
 
@@ -264,8 +280,19 @@ def train(processed_dir: str, test_wav_dir: str):
         end_time_epoch = time.time()
         time_elapsed_epoch = end_time_epoch - start_time_epoch
 
-        print('Time Elapsed for This Epoch: %02d:%02d:%02d' % (time_elapsed_epoch // 3600, (time_elapsed_epoch % 3600 // 60),
+        print('Time Elapsed for Epoch %i: %02d:%02d:%02d' % (epoch, time_elapsed_epoch // 3600, (time_elapsed_epoch % 3600 // 60),
                                                                (time_elapsed_epoch % 60 // 1)))
+
+    import pickle as pkl
+
+    os.makedirs('out/loss_pickles', exist_ok=True)
+
+    with open('out/loss_pickles/gen_losses.pkl', 'wb') as f:
+        pkl.dump(gen_losses, f)
+    with open('out/loss_pickles/disc_losses.pkl', 'wb') as f:
+        pkl.dump(disc_losses, f)
+    with open('out/loss_pickles/class_losses.pkl', 'wb') as f:
+        pkl.dump(class_losses, f)
 
 
 if __name__ == '__main__':
