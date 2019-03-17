@@ -15,6 +15,8 @@ def get_speakers(trainset: str = './data/fourspeakers'):
 
     all_speaker = [s.rsplit('/', maxsplit=1)[1] for s in all_sub_folder]
 
+    all_speaker.remove('TM2')
+
     return all_speaker
 
 

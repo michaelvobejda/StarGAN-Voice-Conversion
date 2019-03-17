@@ -109,7 +109,7 @@ def train(processed_dir: str, test_wav_dir: str):
             for name in batchnames:
 #                name = name.split(sep='-')[0]  #SF1
 #                t = np.random.choice(exclude_dict[name], 1)[0]
-                t = np.random.choice(synth_files)
+                t = np.random.choice(non_synth_files)
                 pre_targets.append(t)
 
             #one batch train data
